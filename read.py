@@ -1,52 +1,34 @@
 import csv
 import sys
-from collections import defaultdict
 
-class Node(object):
-    def add(self, child):
-        self.children.append(child)
+def print_indented(s, level):
+    for line in s.split('\n'):
+        print '\t' * (level - 1) + line
 
-    def __str__(self):
-        children = '\n'.join(map(str, self.children))
-        return self.level * '  ' + self['Task'] + children
+def level(n):
+    items = n['Task ID'].split('.')
+    return len(items)
 
-class Root(Node):
-    level = 0
-    def __init__(self):
-        self.children = []
+def print_row(n):
+    lvl = level(n)
+    if lvl == 0:
+        return
+        
+    fmts = {'Project': "%(Task)s:", 'Action': "- %(Task)s"}
+    fmt = fmts[n['Type']]
     
-    def add(self, child):
-        self.children.append(child)
-    
-    def __getitem__(self, key):
-        return ''
+    print_indented(fmt % n, lvl)
+    if n['Notes']:
+        print_indented(n['Notes'], lvl)
 
-class Tree(Node):
-    def __init__(self, data):
-        self.data = data
-        self.children = []
-        self.level = len(self['Task ID'].split('.'))
-
-    def __getitem__(self, key):
-        return self.data[key]
-
-def make_tree(seq):
-    stack = [Root()]
-    
-    for item in map(Tree, seq):
-        while item.level <= stack[-1].level:
-            stack.pop()
-        stack[-1].add(item)
-    
-    return stack[0]
-
-def read(filename):
+def handle(filename):
     with open(filename) as f:
-        return list(csv.DictReader(f))
-
+        for row in csv.DictReader(f):
+            print_row(row)
 
 def main():
-    pass
+    handle(sys.argv[1])
+
 
 if __name__ == '__main__':
     main()
