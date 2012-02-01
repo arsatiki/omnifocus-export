@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import csv
 import sys
 
@@ -27,6 +28,10 @@ def handle(filename):
             print_row(row)
 
 def main():
+    if len(sys.argv) != 2:
+        print "Usage: %s filename" % sys.argv[0]
+        sys.exit(1)
+
     handle(sys.argv[1])
 
 
