@@ -20,7 +20,7 @@ def print_row(n):
     
     print_indented(fmt % n, lvl)
     if n['Notes']:
-        print_indented(n['Notes'], lvl)
+        print_indented(n['Notes'], lvl + 1)
 
 def handle(filename):
     with open(filename) as f:
